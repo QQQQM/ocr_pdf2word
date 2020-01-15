@@ -5,7 +5,7 @@ import time
 import subprocess
 from aip import AipOcr
 from docx import Document
-from wand.image import Image
+# from wand.image import Image
 from configparser import ConfigParser
 
 # 读取配置文件config.cfg
@@ -55,23 +55,20 @@ def remove_control_characters(content2):
     return content2.translate(mpa)
 
 
+'''
 def convert_pdf_to_img(pdf_filename, img_filename):
     print("\n正在将：", pdf_filename, "\n转为图片存放在：", img_filename)
     with Image(filename=pdf_filename) as img:
         print('总页数为：', len(img.sequence))
         with img.convert(config['img_type']) as converted:
             converted.save(filename=img_filename)
+'''
 
 
 def convert_pdf_to_img_2(pdf_filename, img_filename, img_pathname):
     print("\n正在将：", pdf_filename, "\n转为图片存放在：", img_filename, "\n请稍等片刻。。。")
-    with Image(filename=pdf_filename) as img:
-        print('总页数为：', len(img.sequence))
-        subprocess.check_output(['pdfimages.exe', '-png', pdf_filename, img_filename])
-        if len(os.listdir(img_pathname)) == len(img.sequence):
-            print("\n全部转换完成！")
-        else:
-            print("\n转换页数:",os.listdir(img_pathname))
+    subprocess.check_output(['pdfimages.exe', '-png', pdf_filename, img_filename])
+    print("\n全部转换完成！")
 
 
 def html_to_plain_text (text):
@@ -133,8 +130,6 @@ if op0 == '0':
     text_sor = ""
     for img in os.listdir(img_file):
         img_extension_name = os.path.splitext(img)[1]
-        if img_extension_name != '.' + config['img_type']:
-            continue
         img_name = img_file + '/' + img
         print("正在识别:", img_name)
         text_tmp = img_to_str(img_name)
@@ -158,7 +153,7 @@ for file in os.listdir(config['pdf_folder']):
         continue
     print("\n检测到新的pdf！")
 
-    flag = input("\n是否需要处理换行？（此处回车后若未响应请再按一次回车）\n" +
+    flag = input("\n是否需要处理换行？\n" +
                  "\t1：表示保留结尾符号和大写开头单词结尾换行;\n"
                  "\t2：表示仅保留结尾符号结尾换行;\n\t0：表示不处理。\n")
     flag2 = input("\n是否需要处理空格问题？;\n\t1：表示处理空格问题;\n\t0：表示不处理。\n")
@@ -180,20 +175,18 @@ for file in os.listdir(config['pdf_folder']):
     word_file = config['word_folder'] + '/' + file_name + '.docx'
     print("文件名：", file_name,"\n源路径：", pdf_file, "\n目标路径：",word_file, "\n图片路径：", img_path)
     mkdir(img_path)
-
+    convert_pdf_to_img_2(pdf_file, img_file, img_path)
+    '''
     op = input("请选择转换机制（默认为1）：\n\t1：pdfimages；\n\t2：wand.\n")
 
     if op == '1':
         convert_pdf_to_img_2(pdf_file, img_file, img_path)
     else:
         convert_pdf_to_img(pdf_file, img_file)
-
+    '''
     text_sor = ""
     for img in os.listdir(img_path):
         img_extension_name = os.path.splitext(img)[1]
-        if img_extension_name != '.' + config['img_type']:
-            continue
-
         img_name = img_path + '/' + img
         print("正在识别:", img_name)
         text_tmp = img_to_str(img_name)

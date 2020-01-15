@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['D:\\myproject\\ocr_pdf2word'],
+             pathex=['D:\\myprocject\\ocr_pdf2word'],
              binaries=[],
              datas=[],
              hiddenimports=[],
